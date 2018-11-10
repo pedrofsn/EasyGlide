@@ -1,8 +1,11 @@
 package br.com.redcode.easyglide.library
 
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.media.ThumbnailUtils
 import android.view.View
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
@@ -73,6 +76,51 @@ fun ImageView.load(
         }
     }
 }
+
+// Bitmap
+fun ImageView.load(
+    bitmap: Bitmap?,
+    onSuccess: (() -> Unit)? = null,
+    requestOption: RequestOptions = RequestOptions().error(error).placeholder(placeholder),
+    enableCrossfade: Boolean? = null
+) {
+    if (bitmap != null) {
+        val callback = object : RequestListener<Drawable> {
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<Drawable>?,
+                isFirstResource: Boolean
+            ): Boolean {
+                return true
+            }
+
+            override fun onResourceReady(
+                resource: Drawable?,
+                model: Any?,
+                target: Target<Drawable>?,
+                dataSource: DataSource?,
+                isFirstResource: Boolean
+            ): Boolean {
+                onSuccess?.invoke()
+                return false
+            }
+        }
+
+        Glide.with(context)
+            .load(bitmap)
+            .apply(requestOption)
+            .apply {
+                if (enableCrossfade == null || enableCrossfade) {
+                    transition(DrawableTransitionOptions.withCrossFade())
+                }
+            }
+            .thumbnail(0.25f)
+            .listener(callback)
+            .into(this)
+    }
+}
+
 
 fun ImageView.load(drawable: Int?, requestOption: RequestOptions? = RequestOptions()) {
     drawable.let {
@@ -193,4 +241,12 @@ fun ImageView.tint(colorInt: Int?) {
         val colorStateList = ColorStateList.valueOf(color)
         ImageViewCompat.setImageTintList(this, colorStateList)
     }
+}
+
+fun getBitmapThumbnail(pathFile: String, thumbSquare: Int? = null, width: Int? = null, height: Int? = null): Bitmap? {
+    val mSquare = thumbSquare ?: 64
+    val mWidth = width ?: mSquare
+    val mHeight = height ?: mSquare
+
+    return ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(pathFile), mWidth, mHeight)
 }
