@@ -16,12 +16,13 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 
 // -------------------------------------------------------------------------------------------------> ImageView
 
-@BindingAdapter(value = ["app:loadCircle", "app:diskStrategy", "app:enableCrossfade"], requireAll = false)
-fun loadCircle(imageView: ImageView?, url: String?, diskStrategy: DiskCacheStrategy?, enableCrossfade: Boolean?) {
+@BindingAdapter(value = ["app:loadCircle", "app:diskStrategy", "app:enableCrossfade", "app:roundingRadiusCorner"], requireAll = false)
+fun loadCircle(imageView: ImageView?, url: String?, diskStrategy: DiskCacheStrategy?, enableCrossfade: Boolean?, roundingRadiusCorner: Int?) {
     imageView?.loadWithCircleTransform(
         url = url,
         diskStrategy = diskStrategy ?: DiskCacheStrategy.AUTOMATIC,
-        enableCrossfade = enableCrossfade
+        enableCrossfade = enableCrossfade,
+        roundingRadiusCorner = roundingRadiusCorner
     )
 }
 

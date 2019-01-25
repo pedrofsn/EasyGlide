@@ -15,9 +15,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.RequestOptions.circleCropTransform
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
@@ -206,14 +208,20 @@ fun ImageView.load(fragment: Fragment, drawable: Int, requestOption: RequestOpti
 fun ImageView.loadWithCircleTransform(
     url: String?,
     diskStrategy: DiskCacheStrategy = DiskCacheStrategy.AUTOMATIC,
-    enableCrossfade: Boolean? = null
+    enableCrossfade: Boolean? = null,
+    roundingRadiusCorner: Int? = null
 ) {
     url?.let {
-        val requestOptions = RequestOptions
-            .circleCropTransform()
-            .diskCacheStrategy(diskStrategy)
-            .skipMemoryCache(diskStrategy == DiskCacheStrategy.NONE)
-
+        //RoundedCorners
+        val requestOptions = RequestOptions().apply {
+            if (roundingRadiusCorner != null) {
+                transforms(RoundedCorners(roundingRadiusCorner))
+            } else {
+                circleCropTransform()
+            }
+            diskCacheStrategy(diskStrategy)
+            skipMemoryCache(diskStrategy == DiskCacheStrategy.NONE)
+        }
 
         Glide.with(context)
             .load(it)
