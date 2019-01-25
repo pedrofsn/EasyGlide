@@ -1,1 +1,1 @@
-include ':app', ':easy-glide', ':easyglide-databinding'
+include ':app', ':easy-glide', ':easy-glide-databinding'

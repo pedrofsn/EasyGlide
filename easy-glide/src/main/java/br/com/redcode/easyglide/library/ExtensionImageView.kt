@@ -19,7 +19,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.RequestOptions.circleCropTransform
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
@@ -213,14 +212,13 @@ fun ImageView.loadWithCircleTransform(
 ) {
     url?.let {
         //RoundedCorners
-        val requestOptions = RequestOptions().apply {
-            if (roundingRadiusCorner != null) {
-                transforms(RoundedCorners(roundingRadiusCorner))
-            } else {
-                circleCropTransform()
-            }
-            diskCacheStrategy(diskStrategy)
-            skipMemoryCache(diskStrategy == DiskCacheStrategy.NONE)
+        val requestOptions = RequestOptions
+            .circleCropTransform()
+            .diskCacheStrategy(diskStrategy)
+            .skipMemoryCache(diskStrategy == DiskCacheStrategy.NONE)
+
+        if (roundingRadiusCorner != null) {
+            requestOptions.transforms(RoundedCorners(roundingRadiusCorner))
         }
 
         Glide.with(context)

@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 28
@@ -11,12 +12,36 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "${variant.name} - ${variant.versionName} (${variant.versionCode}).apk"
+        }
+    }
+
+    androidExtensions {
+        experimental true
+    }
+
+    subprojects {
+        gradle.projectsEvaluated {
+            tasks.withType(JavaCompile) {
+                options.compilerArgs << '-Xmaxerrs' << '500'
+            }
         }
     }
 }
@@ -26,5 +51,5 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$version_app_compat_x"
 
     // Load image asynchronously
-    api project(':easy-glide')
+    implementation project(':easy-glide')
 }
