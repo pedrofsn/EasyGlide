@@ -33,16 +33,29 @@ private const val placeholder = android.R.drawable.stat_sys_download
 private val error = R.drawable.ic_error
 
 // URL
-fun ImageView.load(url: String?) {
-    this.loadCompleteUrlImage(url = url)
+fun ImageView.load(url: String?,
+                   onSuccess: (() -> Unit)? = null,
+                   enableCrossfade: Boolean? = null) {
+    this.loadCompleteUrlImage(url = url, onSuccess = onSuccess,
+        enableCrossfade = enableCrossfade)
 }
 
-fun ImageView.load(url: String?, withPlaceholder: Boolean) {
-    this.loadCompleteUrlImage(url = url, withPlaceholder = withPlaceholder)
+fun ImageView.load(url: String?,
+                   withPlaceholder: Boolean,
+                   onSuccess: (() -> Unit)? = null,
+                   enableCrossfade: Boolean? = null) {
+    this.loadCompleteUrlImage(url = url, withPlaceholder = withPlaceholder,
+        onSuccess = onSuccess,
+        enableCrossfade = enableCrossfade)
 }
 
-fun ImageView.load(url: String?, withPlaceholder: Int) {
-    this.loadCompleteUrlImage(url = url, placeholderResId = withPlaceholder)
+fun ImageView.load(url: String?,
+                   withPlaceholder: Int,
+                   onSuccess: (() -> Unit)? = null,
+                   enableCrossfade: Boolean? = null) {
+    this.loadCompleteUrlImage(url = url, placeholderResId = withPlaceholder,
+        onSuccess = onSuccess,
+        enableCrossfade = enableCrossfade)
 }
 
 private fun ImageView.loadCompleteUrlImage(
@@ -107,16 +120,29 @@ private fun ImageView.loadCompleteUrlImage(
 }
 
 // Bitmap
-fun ImageView.load(bitmap: Bitmap?) {
-    this.loadCompleteBitmapImage(bitmap = bitmap)
+fun ImageView.load(bitmap: Bitmap?,
+                   onSuccess: (() -> Unit)? = null,
+                   enableCrossfade: Boolean? = null) {
+    this.loadCompleteBitmapImage(bitmap = bitmap, onSuccess = onSuccess,
+        enableCrossfade = enableCrossfade)
 }
 
-fun ImageView.load(bitmap: Bitmap?, withPlaceholder: Boolean) {
-    this.loadCompleteBitmapImage(bitmap = bitmap, withPlaceholder = withPlaceholder)
+fun ImageView.load(bitmap: Bitmap?,
+                   withPlaceholder: Boolean,
+                   onSuccess: (() -> Unit)? = null,
+                   enableCrossfade: Boolean? = null) {
+    this.loadCompleteBitmapImage(bitmap = bitmap, withPlaceholder = withPlaceholder,
+        onSuccess = onSuccess,
+        enableCrossfade = enableCrossfade)
 }
 
-fun ImageView.load(bitmap: Bitmap?, withPlaceholder: Int) {
-    this.loadCompleteBitmapImage(bitmap = bitmap, placeholderResId = withPlaceholder)
+fun ImageView.load(bitmap: Bitmap?,
+                   withPlaceholder: Int,
+                   onSuccess: (() -> Unit)? = null,
+                   enableCrossfade: Boolean? = null) {
+    this.loadCompleteBitmapImage(bitmap = bitmap, placeholderResId = withPlaceholder,
+        onSuccess = onSuccess,
+        enableCrossfade = enableCrossfade)
 }
 
 private fun ImageView.loadCompleteBitmapImage(
