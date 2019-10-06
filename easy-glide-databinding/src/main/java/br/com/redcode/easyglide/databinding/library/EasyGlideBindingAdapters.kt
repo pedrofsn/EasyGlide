@@ -31,7 +31,7 @@ fun loadCircle(imageView: ImageView?, url: String?, diskStrategy: DiskCacheStrat
 
 
 @BindingAdapter(
-    value = ["app:load", "app:withPlaceholder", "app:withPlaceholderDrawable", "app:withError", "app:enableCrossfade", "app:thumbnailWidth", "app:thumbnailHeight", "app:thumbnailSquare"],
+    value = ["app:load", "app:withPlaceholder", "app:placeholderDrawable", "app:withError", "app:errorDrawable", "app:enableCrossfade", "app:thumbnailWidth", "app:thumbnailHeight", "app:thumbnailSquare"],
     requireAll = false
 )
 fun load(
@@ -40,6 +40,7 @@ fun load(
     withPlaceholder: Boolean = false,
     placeholderDrawable: Drawable?,
     withError: Boolean = false,
+    errorDrawable: Drawable?,
     enableCrossfade: Boolean?,
     thumbnailWidth: Int?,
     thumbnailHeight: Int?,
@@ -50,8 +51,9 @@ fun load(
             RequestOptions().placeholder(it) } ?:
             RequestOptions().placeholder(placeholder)
     } else RequestOptions()
-    if (withError) {
-        requestOptions = requestOptions.error(error)
+    if (withError || errorDrawable != null) {
+        requestOptions = errorDrawable?.let {
+            requestOptions.error(it) } ?: requestOptions.error(error)
     }
 
     if (url != null) {
