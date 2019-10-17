@@ -3,7 +3,7 @@ EasyGlide
 It's a wrapper implementation of [Glide](https://github.com/bumptech/glide/)
 
 
-Usage 
+Setup 
 --------
 [![](https://www.jitpack.io/v/pedrofsn/easyglide.svg)](https://www.jitpack.io/#pedrofsn/easyglide)
 ```
