@@ -37,30 +37,56 @@ fun ImageView.load(url: String?,
                    onSuccess: (() -> Unit)? = null,
                    enableCrossfade: Boolean? = null) {
     this.loadCompleteUrlImage(url = url,
-        glideRequestOption = RequestOptions(),
+        glideRequestOption = buildRequestOptions(
+            false, placeholder, false, error),
         onSuccess = onSuccess,
         enableCrossfade = enableCrossfade)
 }
 
 fun ImageView.load(url: String?,
-                   withPlaceholder: Boolean,
+                   withPlaceholder: Boolean = false,
+                   withError: Boolean = false,
                    onSuccess: (() -> Unit)? = null,
                    enableCrossfade: Boolean? = null) {
-    val requestOption: RequestOptions = if (withPlaceholder) RequestOptions().error(error)
-        .placeholder(placeholder) else RequestOptions()
-    this.loadCompleteUrlImage(url = url, glideRequestOption = requestOption,
+    this.loadCompleteUrlImage(url = url,
+        glideRequestOption = buildRequestOptions(
+            withPlaceholder, placeholder, withError, error),
+        onSuccess = onSuccess,
+        enableCrossfade = enableCrossfade)
+}
+
+fun ImageView.load(url: String?,
+                   withPlaceholder: Boolean = false,
+                   withError: Int,
+                   onSuccess: (() -> Unit)? = null,
+                   enableCrossfade: Boolean? = null) {
+    this.loadCompleteUrlImage(url = url,
+        glideRequestOption = buildRequestOptions(
+            withPlaceholder, placeholder, true, withError),
         onSuccess = onSuccess,
         enableCrossfade = enableCrossfade)
 }
 
 fun ImageView.load(url: String?,
                    withPlaceholder: Int,
+                   withError: Boolean = false,
                    onSuccess: (() -> Unit)? = null,
                    enableCrossfade: Boolean? = null) {
-    val requestOption: RequestOptions = RequestOptions().error(error)
-            .placeholder(withPlaceholder)
     this.loadCompleteUrlImage(url = url,
-        glideRequestOption = requestOption,
+        glideRequestOption = buildRequestOptions(
+            true, withPlaceholder, withError, error),
+        onSuccess = onSuccess,
+        enableCrossfade = enableCrossfade)
+}
+
+fun ImageView.load(url: String?,
+                   withPlaceholder: Int,
+                   withError: Int,
+                   onSuccess: (() -> Unit)? = null,
+                   enableCrossfade: Boolean? = null) {
+    this.loadCompleteUrlImage(url = url,
+        glideRequestOption = buildRequestOptions(
+            true, withPlaceholder, true, withError),
         onSuccess = onSuccess,
         enableCrossfade = enableCrossfade)
 }
@@ -116,39 +142,68 @@ fun ImageView.loadCompleteUrlImage(
 fun ImageView.load(bitmap: Bitmap?,
                    onSuccess: (() -> Unit)? = null,
                    enableCrossfade: Boolean? = null) {
-    this.loadCompleteBitmapImage(bitmap = bitmap, onSuccess = onSuccess,
+    this.loadCompleteBitmapImage(bitmap = bitmap,
+        glideRequestOption = buildRequestOptions(
+            false, placeholder, false, error),
+        onSuccess = onSuccess,
+        enableCrossfade = enableCrossfade)
+}
+
+fun ImageView.load(bitmap: Bitmap?,
+                   withPlaceholder: Boolean = false,
+                   withError: Boolean = false,
+                   onSuccess: (() -> Unit)? = null,
+                   enableCrossfade: Boolean? = null) {
+    this.loadCompleteBitmapImage(bitmap = bitmap,
+        glideRequestOption = buildRequestOptions(
+            withPlaceholder, placeholder, withError, error),
+        onSuccess = onSuccess,
         enableCrossfade = enableCrossfade)
 }
 
 fun ImageView.load(bitmap: Bitmap?,
                    withPlaceholder: Boolean,
+                   withError: Int,
                    onSuccess: (() -> Unit)? = null,
                    enableCrossfade: Boolean? = null) {
-    this.loadCompleteBitmapImage(bitmap = bitmap, withPlaceholder = withPlaceholder,
+    this.loadCompleteBitmapImage(bitmap = bitmap,
+        glideRequestOption = buildRequestOptions(
+            withPlaceholder, placeholder, true, withError),
         onSuccess = onSuccess,
         enableCrossfade = enableCrossfade)
 }
 
 fun ImageView.load(bitmap: Bitmap?,
                    withPlaceholder: Int,
+                   withError: Boolean = false,
                    onSuccess: (() -> Unit)? = null,
                    enableCrossfade: Boolean? = null) {
-    this.loadCompleteBitmapImage(bitmap = bitmap, placeholderResId = withPlaceholder,
+    this.loadCompleteBitmapImage(bitmap = bitmap,
+        glideRequestOption = buildRequestOptions(
+            true, withPlaceholder, withError, error),
         onSuccess = onSuccess,
         enableCrossfade = enableCrossfade)
 }
 
+fun ImageView.load(bitmap: Bitmap?,
+                   withPlaceholder: Int,
+                   withError: Int,
+                   onSuccess: (() -> Unit)? = null,
+                   enableCrossfade: Boolean? = null) {
+    this.loadCompleteBitmapImage(bitmap = bitmap,
+        glideRequestOption = buildRequestOptions(
+            true, withPlaceholder, true, withError),
+        onSuccess = onSuccess,
+        enableCrossfade = enableCrossfade)
+}
+
+
 private fun ImageView.loadCompleteBitmapImage(
         bitmap: Bitmap?,
-        placeholderResId: Int? = null,
-        withPlaceholder: Boolean = false,
+        glideRequestOption: RequestOptions,
         onSuccess: (() -> Unit)? = null,
         enableCrossfade: Boolean? = null
 ) {
-    val requestOption: RequestOptions = if (withPlaceholder || placeholderResId != null) {
-        RequestOptions().error(error)
-                .placeholder(placeholderResId?.let { it } ?: placeholder)
-    } else RequestOptions()
     if (bitmap != null) {
         val callback = object : RequestListener<Drawable> {
             override fun onLoadFailed(
@@ -174,7 +229,7 @@ private fun ImageView.loadCompleteBitmapImage(
 
         Glide.with(context)
             .load(bitmap)
-            .apply(requestOption)
+            .apply(glideRequestOption)
             .apply {
                 if (enableCrossfade == null || enableCrossfade) {
                     transition(DrawableTransitionOptions.withCrossFade())
@@ -318,4 +373,13 @@ fun getBitmapThumbnail(pathFile: String, thumbSquare: Int? = null, width: Int? =
     val mHeight = height ?: mSquare
 
     return ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(pathFile), mWidth, mHeight)
+}
+
+private fun buildRequestOptions(withPlaceholder: Boolean,
+                                placeholderResId: Int,
+                                withError: Boolean,
+                                errorResId: Int): RequestOptions {
+    val requestOptions: RequestOptions = if (withPlaceholder)
+        RequestOptions().placeholder(placeholderResId) else RequestOptions()
+    return if (withError) requestOptions.error(errorResId) else requestOptions
 }
