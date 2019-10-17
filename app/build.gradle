@@ -13,6 +13,9 @@ android {
         versionCode 1
         versionName "1.0"
 
+        resConfigs("pt", "rBR", "pt-rBR", "en")
+        vectorDrawables.useSupportLibrary = true
+
         javaCompileOptions {
             annotationProcessorOptions {
                 includeCompileClasspath true
@@ -33,16 +36,20 @@ android {
         }
     }
 
-    androidExtensions {
-        experimental true
-    }
-
     subprojects {
         gradle.projectsEvaluated {
             tasks.withType(JavaCompile) {
                 options.compilerArgs << '-Xmaxerrs' << '500'
             }
         }
+    }
+
+    androidExtensions {
+        experimental true
+    }
+
+    dataBinding {
+        enabled = true
     }
 }
 
@@ -51,5 +58,5 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$version_app_compat_x"
 
     // Load image asynchronously
-    implementation project(':easy-glide')
+    implementation project(':easy-glide-databinding')
 }
