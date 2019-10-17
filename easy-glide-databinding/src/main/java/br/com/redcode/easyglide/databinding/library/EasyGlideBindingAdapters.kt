@@ -5,16 +5,19 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
-import br.com.redcode.easyglide.library.getBitmapThumbnail
-import br.com.redcode.easyglide.library.load
-import br.com.redcode.easyglide.library.loadInView
-import br.com.redcode.easyglide.library.loadWithCircleTransform
+import br.com.redcode.easyglide.library.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
+
+
 
 
 // -------------------------------------------------------------------------------------------------> ImageView
+
+private const val placeholder = android.R.drawable.stat_sys_download
+private val error = R.drawable.ic_error
 
 @BindingAdapter(value = ["app:loadCircle", "app:diskStrategy", "app:enableCrossfade", "app:roundingRadiusCorner"], requireAll = false)
 fun loadCircle(imageView: ImageView?, url: String?, diskStrategy: DiskCacheStrategy?, enableCrossfade: Boolean?, roundingRadiusCorner: Int?) {
@@ -28,17 +31,28 @@ fun loadCircle(imageView: ImageView?, url: String?, diskStrategy: DiskCacheStrat
 
 
 @BindingAdapter(
-    value = ["app:load", "app:enableCrossfade", "app:thumbnailWidth", "app:thumbnailHeight", "app:thumbnailSquare"],
+    value = ["app:load", "app:withPlaceholder", "app:withPlaceholderDrawable", "app:withError", "app:enableCrossfade", "app:thumbnailWidth", "app:thumbnailHeight", "app:thumbnailSquare"],
     requireAll = false
 )
 fun load(
     imageView: ImageView?,
     url: String?,
+    withPlaceholder: Boolean = false,
+    placeholderDrawable: Drawable?,
+    withError: Boolean = false,
     enableCrossfade: Boolean?,
     thumbnailWidth: Int?,
     thumbnailHeight: Int?,
     thumbnailSquare: Int?
 ) {
+    var requestOptions = if (withPlaceholder || placeholderDrawable != null) {
+        placeholderDrawable?.let {
+            RequestOptions().placeholder(it) } ?:
+            RequestOptions().placeholder(placeholder)
+    } else RequestOptions()
+    if (withError) {
+        requestOptions = requestOptions.error(error)
+    }
 
     if (url != null) {
         when {
@@ -53,6 +67,7 @@ fun load(
                             transition(DrawableTransitionOptions.withCrossFade())
                         }
                     }
+                    .apply(requestOptions)
                     .into(imageView)
             }
 
@@ -67,13 +82,15 @@ fun load(
                             transition(DrawableTransitionOptions.withCrossFade())
                         }
                     }
+                    .apply(requestOptions)
                     .into(imageView)
 
             }
 
             else -> {
-                imageView?.load(
+                imageView?.loadCompleteUrlImage(
                     url = url,
+                    glideRequestOption = requestOptions,
                     enableCrossfade = enableCrossfade
                 )
             }
