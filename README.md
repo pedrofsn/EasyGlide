@@ -1,9 +1,10 @@
-[![](https://www.jitpack.io/v/pedrofsn/easyglide.svg)](https://www.jitpack.io/#pedrofsn/easyglide)
-
 EasyGlide
 =====
 It's a wrapper implementation of [Glide](https://github.com/bumptech/glide/)
 
+Usage 
+--------
+[![](https://www.jitpack.io/v/pedrofsn/easyglide.svg)](https://www.jitpack.io/#pedrofsn/easyglide)
 ```
 implementation 'com.github.pedrofsn.easyglide:LATEST-VERSION'
 ```
