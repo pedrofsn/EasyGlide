@@ -83,7 +83,7 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="20dp"
-                app:load="@{data}"
+                app:loadCircle="@{data}"
                 app:roundingRadiusCorner="@{30}"
                 tools:src="@tools:sample/avatars" />
 
