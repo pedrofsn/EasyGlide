@@ -12,16 +12,23 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 
 
-
-
 // -------------------------------------------------------------------------------------------------> ImageView
 
 private const val placeholder = android.R.drawable.stat_sys_download
 private val error = R.drawable.ic_error
 
-@BindingAdapter(value = ["app:loadCircle", "app:diskStrategy", "app:enableCrossfade", "app:roundingRadiusCorner"], requireAll = false)
-fun loadCircle(imageView: ImageView?, url: String?, diskStrategy: DiskCacheStrategy?, enableCrossfade: Boolean?, roundingRadiusCorner: Int?) {
-    imageView?.loadWithCircleTransform(
+@BindingAdapter(
+    value = ["app:loadCircle", "app:diskStrategy", "app:enableCrossfade", "app:roundingRadiusCorner"],
+    requireAll = false
+)
+fun loadCircle(
+    imageView: ImageView,
+    url: String?,
+    diskStrategy: DiskCacheStrategy?,
+    enableCrossfade: Boolean?,
+    roundingRadiusCorner: Int?
+) {
+    imageView.loadWithCircleTransform(
         url = url,
         diskStrategy = diskStrategy ?: DiskCacheStrategy.AUTOMATIC,
         enableCrossfade = enableCrossfade,
@@ -35,7 +42,7 @@ fun loadCircle(imageView: ImageView?, url: String?, diskStrategy: DiskCacheStrat
     requireAll = false
 )
 fun load(
-    imageView: ImageView?,
+    imageView: ImageView,
     url: String?,
     withPlaceholder: Boolean = false,
     placeholderDrawable: Drawable?,
@@ -46,23 +53,39 @@ fun load(
     thumbnailHeight: Int?,
     thumbnailSquare: Int?
 ) {
-    var requestOptions = if (withPlaceholder || placeholderDrawable != null) {
-        placeholderDrawable?.let {
-            RequestOptions().placeholder(it) } ?:
-            RequestOptions().placeholder(placeholder)
-    } else RequestOptions()
-    if (withError || errorDrawable != null) {
-        requestOptions = errorDrawable?.let {
-            requestOptions.error(it) } ?: requestOptions.error(error)
+    val requestOptions = RequestOptions().apply {
+
+        // placeholder drawable
+        when {
+            // Use defined by user
+            withPlaceholder && placeholderDrawable != null -> placeholder(placeholderDrawable)
+
+            // Use library default
+            withPlaceholder && placeholderDrawable == null -> placeholder(placeholder)
+        }
+
+        // error drawable
+        when {
+            // Use defined by user
+            withError && errorDrawable != null -> error(errorDrawable)
+
+            // Use library default
+            withError && errorDrawable == null -> error(error)
+        }
     }
+
 
     if (url != null) {
         when {
             thumbnailWidth != null && thumbnailHeight != null -> {
 
-                val bitmap = getBitmapThumbnail(pathFile = url, width = thumbnailWidth, height = thumbnailHeight)
+                val bitmap = getBitmapThumbnail(
+                    pathFile = url,
+                    width = thumbnailWidth,
+                    height = thumbnailHeight
+                )
 
-                Glide.with(imageView!!.context)
+                Glide.with(imageView.context)
                     .load(bitmap)
                     .apply {
                         if (enableCrossfade == null || enableCrossfade) {
@@ -74,10 +97,9 @@ fun load(
             }
 
             thumbnailSquare != null -> {
-
                 val bitmap = getBitmapThumbnail(pathFile = url, thumbSquare = thumbnailSquare)
 
-                Glide.with(imageView!!.context)
+                Glide.with(imageView.context)
                     .load(bitmap)
                     .apply {
                         if (enableCrossfade == null || enableCrossfade) {
@@ -86,11 +108,10 @@ fun load(
                     }
                     .apply(requestOptions)
                     .into(imageView)
-
             }
 
             else -> {
-                imageView?.loadCompleteUrlImage(
+                imageView.loadCompleteUrlImage(
                     url = url,
                     glideRequestOption = requestOptions,
                     enableCrossfade = enableCrossfade
@@ -107,7 +128,7 @@ fun load(view: View?, @DrawableRes drawable: Int) = view?.loadInView(drawable)
 fun load(view: View?, drawable: Drawable) = view?.loadInView(drawable)
 
 @BindingAdapter("app:load")
-fun load(imageView: ImageView?, drawable: Drawable?) = imageView?.load(drawable)
+fun load(imageView: ImageView, drawable: Drawable?) = imageView.load(drawable)
 
 @BindingAdapter("app:load")
-fun load(imageView: ImageView?, @DrawableRes drawable: Int?) = imageView?.load(drawable)
+fun load(imageView: ImageView, @DrawableRes drawable: Int?) = imageView.load(drawable)
